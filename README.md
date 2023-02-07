@@ -5,7 +5,9 @@ Idea of this project is to have nodejs streams classes (mostly `Transform` and `
 
 # Install
 `npm install @pieropatron/stream-async`
+
 or
+
 `npm install https://github.com/pieropatron/stream-async.git`
 
 # Import
