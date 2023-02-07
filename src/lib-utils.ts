@@ -1,6 +1,6 @@
 "use strict";
 import { callbackify } from "util";
-import { WriteableAsync } from "./Writeable";
+import { WritableAsync } from "./Writable";
 import { ReadableAsync } from "./Readable";
 
 export function SeparateOptions<T>(options: object, async_keys: Set<string>){
@@ -24,7 +24,7 @@ export function SeparateOptions<T>(options: object, async_keys: Set<string>){
 	return result as {async_opts: T, super_opts: T};
 }
 
-export function CheckWritev<T>(this: WriteableAsync<T>){
+export function CheckWritev<T>(this: WritableAsync<T>){
 	if (this._writevAsync && !this._writeAsync) {
 		this._writeAsync = async function (chunk: T, encoding?: BufferEncoding) {
 			await this._writevAsync?.([{ chunk, encoding }]);

@@ -2,12 +2,12 @@
 
 import {strictEqual} from 'assert';
 
-import {ReadableAsync, TransformAsync, WriteableAsync, pipeline} from '../src/index';
+import {ReadableAsync, TransformAsync, WritableAsync, pipeline} from '../src/index';
 
 type OPTS = { i: number };
 type RES = { J: number };
 
-const test_common = async (ar: RES[], rs: ReadableAsync<OPTS>, ts: TransformAsync<OPTS, RES>, ws: WriteableAsync<RES>)=>{
+const test_common = async (ar: RES[], rs: ReadableAsync<OPTS>, ts: TransformAsync<OPTS, RES>, ws: WritableAsync<RES>)=>{
 	const count = 100;
 	await Promise.all([
 		pipeline(rs, ts, ws),
@@ -52,7 +52,7 @@ const test_options = async()=>{
 	});
 
 	const ar: RES[] = [];
-	const ws = new WriteableAsync<RES>({
+	const ws = new WritableAsync<RES>({
 		objectMode: true,
 		write: ws_write.bind(null, ar)
 	});
@@ -76,7 +76,7 @@ const test_classes = async()=>{
 
 	const ar: RES[] = [];
 
-	class WS extends WriteableAsync<RES> {
+	class WS extends WritableAsync<RES> {
 		constructor(){
 			super({
 				objectMode: true
