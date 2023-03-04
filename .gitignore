@@ -3,5 +3,4 @@ dist
 temp*.*
 temp*
 *.bak
-package-lock.json
 .vscode

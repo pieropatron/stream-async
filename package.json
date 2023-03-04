@@ -1,6 +1,6 @@
 {
   "name": "@pieropatron/stream-async",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "nodejs streams using async/await functions",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,8 +8,7 @@
     "build": "tsc",
     "prepare": "tsc",
     "test": "jest",
-    "eslint": "eslint --cache --ext .js,.jsx,.ts,.tsx src",
-    "eslint:dump": "eslint --print-config ./.eslintrc.json"
+    "lint": "eslint ./src --ext .js,.ts,.jsx,.tsx"
   },
   "repository": {
     "type": "git",
