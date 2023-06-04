@@ -1,5 +1,3 @@
-"use strict";
-
 import { Transform, TransformOptions } from "stream";
 
 import {SeparateOptions, AssignAsyncOpts, CheckWritev, waitDrain, pushAsync} from './lib-utils';
@@ -15,16 +13,13 @@ export interface TransformAsyncOptions<Topts, Tresult> extends TransformOptions 
 	writev?(this: TransformAsync<Topts, Tresult>, chunks: { chunk: Topts; encoding?: BufferEncoding; }[]): void
 }
 
-export class TransformAsync<Topts, Tresult> extends Transform {
-	public _destroyAsync?(this: TransformAsync<Topts, Tresult>, error: Error | null): Promise<void>;
-	public _finalAsync?(this: TransformAsync<Topts, Tresult>): Promise<void>;
-	public _flushAsync?(this: TransformAsync<Topts, Tresult>): Promise<Tresult | undefined>;
-	public _transformAsync?(this: TransformAsync<Topts, Tresult>, chunk: Topts, encoding?: BufferEncoding): Promise<Tresult | undefined>;
-	public _writeAsync?(this: TransformAsync<Topts, Tresult>, chunk: Topts, encoding?: BufferEncoding): Promise<void>;
-	public _writevAsync?(this: TransformAsync<Topts, Tresult>, chunks: { chunk: Topts, encoding?: BufferEncoding }[]): Promise<void>;
-	public push: (chunk: Tresult|null, encoding?: BufferEncoding | undefined) => boolean;
-	public pushAsync: (chunk: Tresult|null, encoding?: BufferEncoding | undefined) => Promise<boolean>;
-	public waitDrain: () => Promise<void>;
+export class TransformAsync<Topts = any, Tresult = Topts> extends Transform {
+	_destroyAsync?(error: Error | null): Promise<void>;
+	_finalAsync?(): Promise<void>;
+	_flushAsync?(): Promise<Tresult | undefined>;
+	_transformAsync?(chunk: Topts, encoding?: BufferEncoding): Promise<Tresult | undefined>;
+	_writeAsync?(chunk: Topts, encoding?: BufferEncoding): Promise<void>;
+	_writevAsync?(chunks: { chunk: Topts, encoding?: BufferEncoding }[]): Promise<void>;
 
 	constructor(options: TransformAsyncOptions<Topts, Tresult>){
 		const { async_opts, super_opts } = SeparateOptions<TransformAsyncOptions<Topts, Tresult>>(options, WRAP_KEYS);
@@ -32,7 +27,15 @@ export class TransformAsync<Topts, Tresult> extends Transform {
 		AssignAsyncOpts(this, async_opts, WRAP_KEYS);
 		CheckWritev.call(this);
 	}
+
+	push(chunk: Tresult|null, encoding?: BufferEncoding){ return super.push(chunk, encoding); }
+
+	pushAsync(chunk: Tresult|null, encoding?: BufferEncoding): Promise<boolean>{
+		return pushAsync.call(this, chunk, encoding);
+	}
+
+	waitDrain(): Promise<void>{ return waitDrain.call(this); }
 }
 
-TransformAsync.prototype.pushAsync = pushAsync;
-TransformAsync.prototype.waitDrain = waitDrain;
+// no need to override in fact
+TransformAsync.prototype.push = Transform.prototype.push;
