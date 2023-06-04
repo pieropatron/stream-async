@@ -1,18 +1,22 @@
-"use strict";
-
 import { Readable, ReadableOptions } from "stream";
 import { waitDrain, pushAsync } from "./lib-utils";
 
 export class ReadableAsync<T> extends Readable {
-	public push: (chunk: T|null, encoding?: BufferEncoding | undefined)=>boolean;
-	public pushAsync: (chunk: T|null, encoding?: BufferEncoding | undefined)=>Promise<boolean>;
-	public waitDrain: ()=>Promise<void>;
-
 	constructor(options: ReadableOptions){
 		options.read = options.read || function(){};
 		super(options);
 	}
+
+	push(chunk: T|null, encoding?: BufferEncoding): boolean{
+		return Readable.prototype.push.call(this, chunk, encoding);
+	}
+
+	pushAsync(chunk: T|null, encoding?: BufferEncoding): Promise<boolean>{
+		return pushAsync.call(this, chunk, encoding);
+	}
+
+	waitDrain(): Promise<void>{ return waitDrain.call(this); }
 }
 
-ReadableAsync.prototype.pushAsync = pushAsync;
-ReadableAsync.prototype.waitDrain = waitDrain;
+// no need to override in fact
+ReadableAsync.prototype.push = Readable.prototype.push;

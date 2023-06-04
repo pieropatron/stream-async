@@ -1,4 +1,3 @@
-"use strict";
 import { callbackify } from "util";
 import { WritableAsync } from "./Writable";
 import { ReadableAsync } from "./Readable";
